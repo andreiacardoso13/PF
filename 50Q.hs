@@ -152,3 +152,128 @@ elemIndicesAux :: Eq a => a -> [a] -> Int -> [Int]
 elemIndicesAux n [] a = []
 elemIndicesAux n (h:t) a | n == h = a : elemIndicesAux n t (a+1)
                          | otherwise = elemIndicesAux n t (a+1)
+
+--26
+nub :: Eq a => [a] -> [a]
+nub (h : t) | elem h t = nub t
+            | otherwise = h : nub t
+
+--27
+delete :: Eq a => a -> [a] -> [a]
+delete a [] = []
+delete a (h:t) | a == h = t
+               | otherwise = h : delete a t 
+
+--28
+remover :: Eq a => [a] -> [a] -> [a]
+remover l [] = l
+remover (h1:t1) (h2:t2) = remover (delete h2 (h1:t1)) t2
+
+--29
+union :: Eq a => [a] -> [a] -> [a]
+union l [] = l
+union l (h:t) | elem h l = union l t
+              | otherwise = union (l ++ [h]) t
+
+--30
+intersect :: Eq a => [a] -> [a] -> [a]
+intersect [] _ = []
+intersect (h:t) (h1:t1) = intersectAux h (h1:t1) ++ intersect t (h1:t1)
+
+intersectAux :: Eq a => a -> [a]-> [a]
+intersectAux a [] = []
+intersectAux a (h:t) | a == h = [a]
+                     | otherwise = intersectAux a t
+
+--31
+insert :: Ord a => a -> [a] -> [a] 
+insert n [h] = [h] ++ [n]
+insert n (h:t) | n < h = n : h : t
+             | n >= h && n < head t = h : n : t
+             | otherwise = h : insert n t
+
+--32
+unwords' ::[String] -> String
+unwords' [] = []
+unwords' (h:t) = h ++ " " ++ unwords' t
+
+--33
+unlines' :: [String] -> String
+unlines' [] = []
+unlines' (h:t) = h ++ "\n" ++ unlines' t
+
+--35
+lookup' :: Eq a => a -> [(a,b)] -> Maybe b
+lookup' n ((x,y):xs) | n == x = Just y
+                     | otherwise = lookup' n xs
+
+--36
+preCrescente :: Ord a => [a] -> [a]
+preCrescente [] = []
+preCrescente [h] = [h]
+preCrescente (h:t) | h <= head t = h : preCrescente t
+                   | otherwise = [h]
+
+--37
+iSort :: Ord a => [a] -> [a]
+iSort [] = []
+iSort (h:t) = insert h (iSort t)
+
+--38
+menor :: String -> String -> Bool
+menor [] _ = True
+menor _ [] = False
+menor (h1:t1) (h2:t2) | h1 < h2 = True
+                      | h1 > h2 = False
+                      | otherwise = menor t1 t2
+
+--39
+elemMSet :: Eq a => a -> [(a,Int)] -> Bool
+elemMSet a [] = False
+elemMSet a ((h,h1):t) | a == h = True
+                      | otherwise = elemMSet a t
+
+--40
+converteMSet :: [(a,Int)] -> [a]
+converteMSet ((h,0):t) = converteMSet t
+converteMSet [] =[]
+converteMSet ((h,h1):t) = h : converteMSet ((h,h1-1):t)
+
+--41
+insereMSet :: Eq a => a -> [(a,Int)] -> [(a,Int)]
+insereMSet a [] = [(a , 1 )]
+insereMSet a ((h,h1):t) | a == h = ((h,h1+1):t)
+                        | otherwise = (h,h1) : insereMSet a t
+--42
+removeMSet :: Eq a => a -> [(a,Int)] -> [(a,Int)]
+removeMSet a ((h,1):t) = []
+removeMSet a [] = []
+removeMSet a ((h,h1):t) | a == h = ((h,h1-1):t)
+                        | otherwise = (h,h1) : removeMSet a t
+
+--44
+partitionEithers :: [Either a b] -> ([a], [b])
+partitionEithers [] = ([], [])
+partitionEithers ((Left a) : t) = (a : b, c)
+  where (b,c) = partitionEithers t
+partitionEithers ((Right a) : t) = (b, a:c)
+  where (b,c) = partitionEithers t
+
+--45
+catMaybes :: [Maybe a] -> [a]
+catMaybes [] = []
+catMaybes ((Just a) :t) = a : catMaybes t
+catMaybes ((Nothing) :t) = catMaybes t
+
+data Movimento = Norte | Sul | Este | Oeste
+              deriving Show
+
+--46
+caminho :: (Int, Int) -> (Int,Int) -> [Movimento]
+caminho (x1,y1) (x2,y2) | x1 == x2 = if y1 < y2
+                                       then Norte : caminho (x1,y1+1) (x2,y2)
+                                       else if y1> y2
+                                              then Sul : caminho (x1,y1-1) (x2,y2)
+                                              else []
+                        | x1 < x2 = Este : caminho (x1 + 1, y1) (x2,y2)
+                        |otherwise = Oeste : caminho (x1-1, y1) (x2,y2)
