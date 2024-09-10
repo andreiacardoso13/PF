@@ -202,6 +202,16 @@ unlines' :: [String] -> String
 unlines' [] = []
 unlines' (h:t) = h ++ "\n" ++ unlines' t
 
+--34
+pMaior :: Ord a => [a] -> Int
+pMaior (x:xs) = pMaiorAux xs 1 0 x
+
+pMaiorAux :: Ord a => [a] -> Int -> Int -> a -> Int
+pMaiorAux [] _ posMaior _ = posMaior
+pMaiorAux (y:ys) i posMaior maior
+    | y > maior = pMaiorAux ys (i+1) i y
+    | otherwise = pMaiorAux ys (i+1) posMaior maior
+
 --35
 lookup' :: Eq a => a -> [(a,b)] -> Maybe b
 lookup' n ((x,y):xs) | n == x = Just y
